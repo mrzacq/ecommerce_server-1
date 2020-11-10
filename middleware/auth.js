@@ -25,7 +25,7 @@ async function authorization(req, res, next){
     try {
         let product = await Product.findByPk(req.params.id)
         if(!product) throw {msg: "Product not found", code: 404}
-        console.log(req.loggedIn)
+        // console.log(req.loggedIn)
         if(req.loggedIn.email === 'admin@mail.com'){
             next()
         } 

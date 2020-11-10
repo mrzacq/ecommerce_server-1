@@ -5,8 +5,7 @@ describe('Post login success', () => {
     it('Should send object with key email, token, code, msg', (done) => {
         let dataLogin = {
             email: 'admin@mail.com',
-            password: "123456",
-            role: 'admin'
+            password: "123456"
         }
         return request(app)
             .post('/login')
@@ -16,7 +15,6 @@ describe('Post login success', () => {
                 expect(res.status).toBe(200)
                 expect(res.body).toHaveProperty('email', 'admin@mail.com')
                 expect(res.body).toHaveProperty('code', 200)
-                expect(res.body).toHaveProperty('role', 'admin')
                 expect(res.body).toHaveProperty('msg', 'login succesfully')
                 expect(res.body).not.toHaveProperty('password')
                 done()
@@ -28,8 +26,7 @@ describe('POST login failed', function() {
     it('Respon with msg invalid email or password', (done) => {
         let dataLogin = {
             email: 'admin@mail.com',
-            password: "12346",
-            role: 'admin'
+            password: "12346"
         }
         let errors = ['invalid email or password']
         return request(app)
@@ -47,9 +44,8 @@ describe('POST login failed', function() {
     })
     it('Respon with admin only', (done) => {
         let dataLogin = {
-            email: 'admin@mail.com',
-            password: "123456",
-            role: 'customer'
+            email: 'bukanadmin@mail.com',
+            password: "123456"
         }
         return request(app)
             .post('/login')
@@ -57,7 +53,8 @@ describe('POST login failed', function() {
             .then((res) => {
                 expect(res.status).toBe(403)
                 expect(res.body).toHaveProperty('errors', expect.any(Array))
-                expect(res.body.errors).toEqual(['invalid email or password','admin only'])
+                // console.log(res.body.errors, 'adfjl')
+                expect(res.body.errors).toEqual(['admin only'])
                 done()
             })
             .catch(err => {
@@ -65,22 +62,3 @@ describe('POST login failed', function() {
             })
     })
 })
-
-// describe('POST login failed', function() {
-//     it('Respon with admin only', (done) => {
-//         let dataLogin = {
-//             email: 'admin@mail.com',
-//             password: "123456",
-//             role: 'customer'
-//         }
-//         return request(app)
-//             .post('/login')
-//             .send(dataLogin)
-//             .then((res) => {
-//                 expect(res.status).toBe(403)
-//                 expect(res.body).toHaveProperty('errors', expect.any(Array))
-//                 expect(res.body.errors).toEqual(['admin only'])
-//                 done()
-//             })
-//     })
-// })

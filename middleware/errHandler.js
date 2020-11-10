@@ -1,7 +1,7 @@
-let errors = []
-let code = 500
 
 function errHandler(err, req, res, next){
+    let errors = []
+    let code = 500
     switch(err.name){
         case 'SequelizeValidationError':
             err.errors.forEach(el => {

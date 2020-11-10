@@ -30,7 +30,7 @@ class ProductController{
             // console.log(dataProduct, 'aadjflkdasflkdjas;flj')
             res.status(200).json({dataProduct})
         }).catch(err => {
-            console.log(err, 'aljdlsdflflj')
+            // console.log(err, 'aljdlsdflflj')
             next(err)
         })
     }
@@ -67,10 +67,10 @@ class ProductController{
                 id:id
             }
         }).then(dataProduct => {
-            console.log(dataProduct, 'adsfdjafkldjsa')
+            // console.log(dataProduct, 'adsfdjafkldjsa')
             res.status(200).json({msg: 'Product deleted'})
         }).catch(err => {
-            console.log(err, 'adfdasfds')
+            // console.log(err, 'adfdasfds')
             next(err)
         })
     }
