@@ -14,6 +14,6 @@ app.use(express.json())
 
 app.use(router)
 app.use(err)
-// app.listen(port, () => console.log(`server http://localhost:${port}`))
+app.listen(port, () => console.log(`server http://localhost:${port}`))
 
 module.exports = app
