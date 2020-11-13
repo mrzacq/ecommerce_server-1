@@ -1,5 +1,5 @@
 const { verifyToken } = require('../helper/jwt')
-const { User, Product } = require('../models')
+const { User, Product, Banner } = require('../models')
 
 async function authentication(req, res, next){
     let { token } = req.headers
@@ -35,4 +35,19 @@ async function authorization(req, res, next){
         next(err)
     }
 }
-module.exports = { authentication, authorization }
+async function authorizationBanner(req, res, next){
+    try {
+        let banner = await Banner.findByPk(req.params.id)
+        // console.log(banner, req.params.id, "ini banner")
+        if(!banner) throw {msg: "Banner not found", code: 404}
+        // console.log(req.loggedIn)
+        if(req.loggedIn.email === 'admin@mail.com'){
+            next()
+        } 
+        else throw {msg: "admin only", code: 403}
+    } catch (err) {
+        // console.log(err,'akdjfldas;l')
+        next(err)
+    }
+}
+module.exports = { authentication, authorization, authorizationBanner }
