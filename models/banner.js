@@ -28,7 +28,16 @@ module.exports = (sequelize, DataTypes) => {
         isUrl: { msg: "Input must be Url"}
       }
     },
-    status: DataTypes.STRING
+    status: DataTypes.STRING,
+    category: {
+      type:  DataTypes.STRING,
+      validate: {
+        notEmpty: {
+          args: true,
+          msg: 'category is required'
+        }
+      }
+    },
   }, {
     sequelize,
     modelName: 'Banner',

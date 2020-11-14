@@ -2,11 +2,12 @@ const { User, Product } = require('../models')
 
 class ProductController{
     static create(req, res, next){
-        const { name, image_url, price, stock } = req.body
+        const { name, image_url, price, stock, category } = req.body
         // console.log(req.loggedIn, 'aaaaaaaaaaaaaaa')
         Product.create({
-            name, image_url, price, stock, UserId: req.loggedIn.id
+            name, image_url, price, stock, category, UserId: req.loggedIn.id
         }).then((dataProduct) => {
+            // console.log(dataProduct, 'cek kategory')
             if(req.loggedIn.email !== 'admin@mail.com') throw { msg: 'admin only', code: 403}
             else{
                 res.status(201).json({ msg: 'success add product', product: dataProduct.name})
@@ -52,8 +53,8 @@ class ProductController{
 
     static update(req, res, next){
         let id = req.params.id
-        const { name, image_url, price, stock } = req.body
-        Product.update({name, image_url,price, stock}, {where: {id: id}})
+        const { name, image_url, price, stock, category } = req.body
+        Product.update({name, image_url,price, stock, category}, {where: {id: id}})
         .then(dataProduct => {
             res.status(200).json({msg: 'success update product'})
         }).catch(err => {

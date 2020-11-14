@@ -2,9 +2,9 @@ const { Banner } = require('../models')
 
 class BannerController {
     static create(req, res, next){
-        const { title, image_url, status } = req.body
+        const { title, image_url, status, category } = req.body
         Banner.create({
-            title, image_url, status, UserId: req.loggedIn.id
+            title, image_url, status, category, UserId: req.loggedIn.id
         }).then(data => {
             if(req.loggedIn.email !== 'admin@mail.com') throw { msg: 'admin only', code: 403}
             else{
@@ -32,8 +32,8 @@ class BannerController {
 
     static update(req, res, next){
         const id = req.params.id
-        const { title, image_url, status } = req.body
-        Banner.update({title, image_url, status}, {
+        const { title, image_url, status, category } = req.body
+        Banner.update({title, image_url, status, category}, {
             where: {
                 id: id
             }
