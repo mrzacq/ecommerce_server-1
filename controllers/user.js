@@ -5,7 +5,7 @@ const bcrypt = require('bcryptjs')
 class UserController{
     static login(req, res, next){
         const { email, password } = req.body
-        if(email !== 'admin@mail.com') throw { msg: 'admin only', code: 403}
+        
         User.findOne({
             where: {
                 email: email
@@ -22,6 +22,19 @@ class UserController{
             }
         }).catch((err) => {
             // console.log(err)
+            next(err)
+        })
+    }
+
+    static register(req, res, next){
+        const { email, password } = req.body
+        User.create({
+            email, password
+        }).then(data => {
+            // console.log(data, 'ini register')
+            res.status(201).json({ email: data.email, msg: 'register success'})
+        }).catch(err => {
+            // console.log(err, 'ini err')
             next(err)
         })
     }

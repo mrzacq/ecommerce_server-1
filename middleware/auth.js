@@ -1,5 +1,5 @@
 const { verifyToken } = require('../helper/jwt')
-const { User, Product, Banner } = require('../models')
+const { User, Product, Banner, Cart } = require('../models')
 
 async function authentication(req, res, next){
     let { token } = req.headers
@@ -7,6 +7,7 @@ async function authentication(req, res, next){
         if(!token) throw {msg: "Authentication failed", code: 400}
         else{
             let decoded = verifyToken(token)
+            // if(decoded.email !== 'admin@mail.com') throw { msg: 'admin only', code: 403}
             let dataUser = await User.findOne({
                 where: { email: decoded.email }
             })
@@ -50,4 +51,25 @@ async function authorizationBanner(req, res, next){
         next(err)
     }
 }
-module.exports = { authentication, authorization, authorizationBanner }
+async function authorizationCart(req, res, next){
+    try {
+        // console.log(req.params.id)
+        let cart = await Cart.findOne({
+            where: {
+                id: req.params.id
+            }
+        })
+        // console.log(banner, req.params.id, "ini banner")
+        // console.log(cart, 'nin cart')
+        if(!cart) throw {msg: "Cart not found", code: 404}
+        if(cart.UserId === req.loggedIn.id){
+            next()
+        } 
+        else throw {msg: "not authorized", code: 403}
+    } catch (err) {
+        console.log(err,'akdjfldas;l')
+        next(err)
+    }
+}
+
+module.exports = { authentication, authorization, authorizationBanner, authorizationCart }

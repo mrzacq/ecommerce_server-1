@@ -9,6 +9,13 @@ function errHandler(err, req, res, next){
             })
             code = 400
             break;
+        case 'SequelizeUniqueConstraintError':
+            err.errors.forEach(el => {
+                // console.log(el, 'ini err')
+                errors.push(el.message, 'email already exist')
+            })
+            code = 400
+            break
         default:
             errors.push(err.msg || 'internal server error')
             code = err.code || 500

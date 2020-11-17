@@ -45,7 +45,54 @@ _Response (500 - internal server error)_
 ```
 {
     "errors": [
-        "Product not found"
+        "internal server error"
+    ]
+}
+```
+---
+### POST /register
+>register account
+
+_Request Params_
+```
+Not needed
+```
+
+_Request Headers_
+```
+Not needed
+```
+
+_Request Body_
+```
+{
+    "email": <string>,
+    "password": <string>
+}
+```
+_Response (200 - OK)_
+```
+{
+    "email": "email",
+    "msg": "register success"
+}
+```
+
+_Response (400 - Bad Requests)_
+>if email already exist
+```
+{
+    "errors": [
+        "email must be unique",
+        "email already exist"
+    ]
+}
+```
+_Response (500 - internal server error)_
+```
+{
+    "errors": [
+        "internal server error"
     ]
 }
 ```
