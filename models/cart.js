@@ -34,7 +34,8 @@ module.exports = (sequelize, DataTypes) => {
       }
     },
     ProductId: DataTypes.INTEGER,
-    UserId: DataTypes.INTEGER
+    UserId: DataTypes.INTEGER,
+    status: DataTypes.BOOLEAN
   }, {
     sequelize,
     modelName: 'Cart',
