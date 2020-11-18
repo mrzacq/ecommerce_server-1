@@ -58,7 +58,7 @@ module.exports = (sequelize, DataTypes) => {
         },
         customValidator(value){
           let stock = value
-          if(stock <= 0) throw { msg: 'stock must be greater than zero'}
+          if(stock < 0) throw { msg: 'stock must be greater than zero'}
         }
       }
     },

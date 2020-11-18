@@ -6,13 +6,12 @@ class CartController{
             order: [['id', 'asc']],
             include: [Product],
             where: {
-                UserId: req.loggedIn.id
+                UserId: req.loggedIn.id,
+                status: true 
             }
         }).then(data => {
-            console.log(data)
             res.status(200).json({data})
         }).catch(err => {
-            console.log(err)
             next(err)
         })
     }
@@ -22,19 +21,18 @@ class CartController{
         Cart.findOne({
             where: {
                 ProductId: id,
-                UserId: req.loggedIn.id
+                UserId: req.loggedIn.id,
+                status: true
             },
             include: [Product]
         }).then(data => {
-            // console.log(data.quantity, 'ini qutty')
             if(!data){
                 return Cart.create({
                     ProductId: id, UserId: req.loggedIn.id, quantity: 1, status: true // true berarti masih ada barangnya kalo false sebaliknya
                 })
             } else {
-                if(data.quantity >= data.Product.dataValues.stock) throw { msg: 'stock reach maximum'}
+                if(data.quantity >= data.Product.dataValues.stock) throw { msg: 'Quantity reach maximum'}
                 else{
-                    // console.log(data.Product.dataValues.stock)
                     return Cart.increment({
                         quantity
                     },{
@@ -46,28 +44,67 @@ class CartController{
                 }
             }
         }).then(cart => {
-            // console.log(cart, 'ini data cart')
             res.status(201).json({ cart, msg: 'succes add to cart' })
         }).catch(err => {
-            console.log(err, 'ini data cart')
             next(err)
         })
     }
 
     static updateQuantity(req, res, next){
         const { quantity } = req.body
+        let qtt = quantity - 1
         Cart.update({
-            quantity: +quantity
+            quantity: qtt
         }, {
             where: {
                 id: +req.params.id,
                 UserId: req.loggedIn.id
             }
         }).then(data => {
-            console.log(data, 'ini quantit')
             res.status(200).json({ data, msg: 'succes update quantity'})
         }).catch(err => {
-            console.log(err, 'iinerr')
+            next(err)
+        })
+    }
+
+    static checkout(req, res, next){
+        const { status, ProductId, quantity } = req.body
+        if(quantity <= 0) throw { msg: 'Please input quantity!'}
+        Cart.findOne({
+            where: {
+                id: req.params.id,
+                UserId: req.loggedIn.id,
+                ProductId: ProductId,
+                status
+            },
+            include: [Product]
+        }).then(data => {
+            let stock = data.Product.stock
+            if(data) {
+                return Product.update({
+                    stock: stock - quantity,
+                }, {
+                    where: {
+                        id: ProductId
+                    }
+                })
+            }
+            else throw { msg: 'cart not found'}
+        }).then(data => {
+            if(!data) throw {msg: 'failed to checkout'}
+            else{
+                return Cart.update({
+                    status: false
+                }, {
+                    where: {
+                        UserId: req.loggedIn.id,
+                        ProductId
+                    }
+                })
+            }
+        }).then(data => {
+        res.status(200).json({ data, msg: 'sukses checkout'})
+        }).catch(err => {
             next(err)
         })
     }
@@ -80,7 +117,6 @@ class CartController{
                 UserId: req.loggedIn.id
             }
         }).then(data => {
-            // console.log(data)
             res.status(200).json({msg: 'success delete cart'})
         }).catch(err => {
             next(err)

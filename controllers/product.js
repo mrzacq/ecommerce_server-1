@@ -19,7 +19,7 @@ class ProductController{
     }
 
     static findAll(req, res, next){
-        Product.findAll({
+        let option = {
             order: [['id', 'asc']],
             include: {
                 model: User,
@@ -27,7 +27,14 @@ class ProductController{
                     exclude: ['password']
                 }
             }
-        }).then(dataProduct => {
+        }
+        if(req.query.category){
+            option.where = {
+                    category: req.query.category
+            }
+        }
+        Product.findAll(option)
+        .then(dataProduct => {
             // console.log(dataProduct, 'aadjflkdasflkdjas;flj')
             res.status(200).json({dataProduct})
         }).catch(err => {
